@@ -1,4 +1,4 @@
-[![npm](http://img.shields.io/npm/v/cfn-include.svg?style=flat-square)](https://npmjs.org/package/cfn-include) [![npm](http://img.shields.io/npm/dm/cfn-include.svg?style=flat-square)](https://npmjs.org/package/cfn-include) [![Build Status](https://img.shields.io/travis/monken/cfn-include/master.svg?style=flat-square)](https://travis-ci.org/monken/cfn-include) ![license](https://img.shields.io/badge/license-mit-blue.svg?style=flat-square)
+[![npm](http://img.shields.io/npm/v/cfn-include.svg?style=flat-square)](https://npmjs.org/package/cfn-include) [![npm](http://img.shields.io/npm/dm/cfn-include.svg?style=flat-square)](https://npmjs.org/package/cfn-include) [![Build Status](https://img.shields.io/travis/nmccready/cfn-include/master.svg?style=flat-square)](https://travis-ci.org/nmccready/cfn-include) ![license](https://img.shields.io/badge/license-mit-blue.svg?style=flat-square)
 
 # cfn-include
 
@@ -8,15 +8,16 @@ For example, [`Fn::Include`](#fninclude) provides a convenient way to include fi
 `cfn-include` tries to be minimally invasive, meaning that the template will still look and feel like an ordinary CloudFormation template. This is what sets `cfn-include` apart from other CloudFormation preprocessors such as [CFNDSL](https://github.com/stevenjack/cfndsl), [StackFormation](https://github.com/AOEpeople/StackFormation) and [AWSBoxen](https://github.com/mozilla/awsboxen). There is no need to use a scripting language or adjust to new syntax. Check them out though, they might be a better fit for you.
 
 **Functions**
-* [`Fn::Include`](#fninclude)
-* [`Fn::Flatten`](#fnflatten)
-* [`Fn::GetEnv`](#fngetenv)
-* [`Fn::Map`](#fnmap)
-* [`Fn::Merge`](#fnmerge)
-* [`Fn::Outputs`](#fnoutputs)
-* [`Fn::Sequence`](#fnsequence)
-* [`Fn::Stringify`](#fnstringify)
-* [`Fn::UpperCamelCase`](#fnuppercamelcase) and `Fn::LowerCamelCase`
+
+- [`Fn::Include`](#fninclude)
+- [`Fn::Flatten`](#fnflatten)
+- [`Fn::GetEnv`](#fngetenv)
+- [`Fn::Map`](#fnmap)
+- [`Fn::Merge`](#fnmerge)
+- [`Fn::Outputs`](#fnoutputs)
+- [`Fn::Sequence`](#fnsequence)
+- [`Fn::Stringify`](#fnstringify)
+- [`Fn::UpperCamelCase`](#fnuppercamelcase) and `Fn::LowerCamelCase`
 
 Tag-based syntax is available in YAML templates. For example,`Fn::Include` becomes `!Include`.
 
@@ -25,7 +26,7 @@ Tag-based syntax is available in YAML templates. For example,`Fn::Include` becom
 You can either install `cfn-include` or use a web service to compile templates.
 
 ```
-npm install --global cfn-include
+npm install --global @znemz/cfn-include
 ```
 
 The web service can be called with your favorite CLI tool such as `curl`.
@@ -40,19 +41,19 @@ curl https://api.netcubed.de/latest/template -XPOST -d @template.json
 
     cfn-include <path> [options]
 
-* `path`
+- `path`
 
   location of template. Either path to a local file, URL or file on an S3 bucket (e.g. `s3://bucket-name/example.template`)
 
 Options:
 
-* `-m, --minimize`   minimize JSON output  [false]
-* `--metadata`       add build metadata to output  [false]
-* `-t, --validate`   validate compiled template  [false]
-* `-y, --yaml`       output yaml instead of json  [false]
-* `--bucket`         bucket name required for templates larger than 50k
-* `--prefix`         prefix for templates uploaded to the bucket ['cfn-include']
-* `--version`        print version and exit
+- `-m, --minimize` minimize JSON output [false]
+- `--metadata` add build metadata to output [false]
+- `-t, --validate` validate compiled template [false]
+- `-y, --yaml` output yaml instead of json [false]
+- `--bucket` bucket name required for templates larger than 50k
+- `--prefix` prefix for templates uploaded to the bucket ['cfn-include']
+- `--version` print version and exit
 
 `cfn-include` also accepts a template passed from stdin
 
@@ -64,21 +65,19 @@ cat mytemplate.yml | cfn-include
 
 ```yaml
 Mappings:
-  Region2AMI:
-    !Include https://api.netcubed.de/latest/ami/lookup?platform=amzn2
+  Region2AMI: !Include https://api.netcubed.de/latest/ami/lookup?platform=amzn2
 Resources:
   Instance:
     Type: AWS::EC2::Instance
     Properties:
-      ImageId: !FindInMap [ Region2AMI, !Ref AWS::Region, AMI ]
+      ImageId: !FindInMap [Region2AMI, !Ref AWS::Region, AMI]
       UserData:
         Fn::Base64:
-          Fn::Sub:
-            !Include { type: string, location: userdata.sh }
+          Fn::Sub: !Include { type: string, location: userdata.sh }
 ```
 
-
 This is what the `userdata.sh` looks like:
+
 ```bash
 #!/bin/bash
 /opt/aws/bin/cfn-init -s ${AWS::StackId} -r MyInstance --region ${AWS::Region}
@@ -87,11 +86,11 @@ This is what the `userdata.sh` looks like:
 ```bash
 cfn-include synopsis.json > output.template
 # you can also compile remote files
-cfn-include https://raw.githubusercontent.com/monken/cfn-include/master/examples/synopsis.json > output.template
+cfn-include https://raw.githubusercontent.com/nmccready/cfn-include/master/examples/synopsis.json > output.template
 ```
 
-
 The output will be something like this:
+
 ```javascript
 {
   "AWSTemplateFormatVersion": "2010-09-09",
@@ -124,21 +123,21 @@ The output will be something like this:
 ] ] } } } } } } }
 ```
 
-##  Fn::Include
+## Fn::Include
 
 Place `Fn::Include` anywhere in the template and it will be replaced by the contents it is referring to. The function accepts an object. Parameters are:
 
-* **location**: The location to the file can be relative or absolute. A relative location is interpreted relative to the template. Included files can in turn include more files, i.e. recursion is supported.
-* **type** (optional): either `json`, `string` or `api`. Defaults to `json`. `string` will include the file literally which is useful in combination with `Fn::Sub`. `api` will call any AWS API and return the response which can be included in the template. Choose `json` for both JSON and YAML files. The `literal` type is deprecated and uses the infamous `Fn::Join` syntax.
-* **context** (optional, deprecated): If `type` is `literal` a context object with variables can be provided. The object can contain plain values or references to parameters or resources in the CloudFormation template (e.g. `{ "Ref": "StackId" }`). Use Mustache like syntax in the file. This option is deprecated in favor of the `Fn::Sub` syntax (see examples below).
-* **query** (optional): If `type` is `json` a [JMESPath](http://jmespath.org/) query can be provided. The file to include is then queried using the value as a JMESPath expression.
+- **location**: The location to the file can be relative or absolute. A relative location is interpreted relative to the template. Included files can in turn include more files, i.e. recursion is supported.
+- **type** (optional): either `json`, `string` or `api`. Defaults to `json`. `string` will include the file literally which is useful in combination with `Fn::Sub`. `api` will call any AWS API and return the response which can be included in the template. Choose `json` for both JSON and YAML files. The `literal` type is deprecated and uses the infamous `Fn::Join` syntax.
+- **context** (optional, deprecated): If `type` is `literal` a context object with variables can be provided. The object can contain plain values or references to parameters or resources in the CloudFormation template (e.g. `{ "Ref": "StackId" }`). Use Mustache like syntax in the file. This option is deprecated in favor of the `Fn::Sub` syntax (see examples below).
+- **query** (optional): If `type` is `json` a [JMESPath](http://jmespath.org/) query can be provided. The file to include is then queried using the value as a JMESPath expression.
 
 Only applicable if **type** is `api`:
 
-* **service**: Service to call (see [AWSJavaScriptSDK](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/index.html), case sensitive, e.g. `EC2`, `CloudFormation`)
-* **action**: Action to call (case sensitive, e.g. `updateStack`, `describeRegions`)
-* **parameters** (optional): Parameters passed to **action** (e.g. `{ StackName:  "MyStack" }`)
-* **region** (optional): Either `AWS_DEFAULT_REGION` or this parameter have to be set which specifies the region where the API call is made.
+- **service**: Service to call (see [AWSJavaScriptSDK](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/index.html), case sensitive, e.g. `EC2`, `CloudFormation`)
+- **action**: Action to call (case sensitive, e.g. `updateStack`, `describeRegions`)
+- **parameters** (optional): Parameters passed to **action** (e.g. `{ StackName: "MyStack" }`)
+- **region** (optional): Either `AWS_DEFAULT_REGION` or this parameter have to be set which specifies the region where the API call is made.
 
 You can also use a plain string if you want the default behavior, which is simply including a JSON file.
 
@@ -184,7 +183,7 @@ Fn::Merge:
   Fn::Map:
     - Fn::Include:
         action: describeRegions
-        query: 'Regions[*].RegionName[]'
+        query: "Regions[*].RegionName[]"
         service: EC2
         type: api
     - _:
@@ -196,7 +195,7 @@ Fn::Merge:
                 - Name: manifest-location
                   Values:
                     - amazon/amzn-ami-hvm-2016.03.3.x86_64-gp2
-            query: 'Images[*].ImageId | [0]'
+            query: "Images[*].ImageId | [0]"
             region: _
             service: EC2
             type: api
@@ -227,15 +226,18 @@ Fn::Map:
 ```
 
 ```json
-[{
-  "CidrIp": "0.0.0.0/0",
-  "FromPort": "80",
-  "ToPort": "80"
-}, {
-  "CidrIp": "0.0.0.0/0",
-  "FromPort": "443",
-  "ToPort": "443"
-}]
+[
+  {
+    "CidrIp": "0.0.0.0/0",
+    "FromPort": "80",
+    "ToPort": "80"
+  },
+  {
+    "CidrIp": "0.0.0.0/0",
+    "FromPort": "443",
+    "ToPort": "443"
+  }
+]
 ```
 
 ## Fn::Flatten
@@ -259,37 +261,46 @@ SecurityGroupIngress:
 Results in:
 
 ```json
-{ "SecurityGroupIngress": [{
-  "CidrIp": "10.0.0.0/8",
-  "FromPort": "80",
-  "ToPort": "80",
-  "IpProtocol": "tcp"
-}, {
-  "CidrIp": "172.16.0.0/12",
-  "FromPort": "80",
-  "ToPort": "80",
-  "IpProtocol": "tcp"
-}, {
-  "CidrIp": "192.168.0.0/16",
-  "FromPort": "80",
-  "ToPort": "80",
-  "IpProtocol": "tcp"
-}, {
-  "CidrIp": "10.0.0.0/8",
-  "FromPort": "443",
-  "ToPort": "443",
-  "IpProtocol": "tcp"
-}, {
-  "CidrIp": "172.16.0.0/12",
-  "FromPort": "443",
-  "ToPort": "443",
-  "IpProtocol": "tcp"
-}, {
-  "CidrIp": "192.168.0.0/16",
-  "FromPort": "443",
-  "ToPort": "443",
-  "IpProtocol": "tcp"
-}]}
+{
+  "SecurityGroupIngress": [
+    {
+      "CidrIp": "10.0.0.0/8",
+      "FromPort": "80",
+      "ToPort": "80",
+      "IpProtocol": "tcp"
+    },
+    {
+      "CidrIp": "172.16.0.0/12",
+      "FromPort": "80",
+      "ToPort": "80",
+      "IpProtocol": "tcp"
+    },
+    {
+      "CidrIp": "192.168.0.0/16",
+      "FromPort": "80",
+      "ToPort": "80",
+      "IpProtocol": "tcp"
+    },
+    {
+      "CidrIp": "10.0.0.0/8",
+      "FromPort": "443",
+      "ToPort": "443",
+      "IpProtocol": "tcp"
+    },
+    {
+      "CidrIp": "172.16.0.0/12",
+      "FromPort": "443",
+      "ToPort": "443",
+      "IpProtocol": "tcp"
+    },
+    {
+      "CidrIp": "192.168.0.0/16",
+      "FromPort": "443",
+      "ToPort": "443",
+      "IpProtocol": "tcp"
+    }
+  ]
+}
 ```
 
 ## Fn::GetEnv
@@ -427,7 +438,7 @@ This helper transformation simplifies the definition of output variables and exp
 ```yaml
 Outputs:
   Fn::Outputs:
-    Version: !GetEnv [VERSION, '1.0.0']
+    Version: !GetEnv [VERSION, "1.0.0"]
     BucketArn: ${Bucket.Arn}
     BucketPolicy:
       Condition: HasBucketPolicy
@@ -442,7 +453,7 @@ This will translate into:
 ```yaml
 Outputs:
   Version:
-    Value: !Sub '1.0.0'
+    Value: !Sub "1.0.0"
     Export:
       Name: !Sub ${AWS::StackName}:Version
 
@@ -468,7 +479,7 @@ Outputs:
 
 ## More Examples
 
-See [/examples](https://github.com/monken/cfn-include/tree/master/examples) for templates that call an API Gateway endpoint to collect AMI IDs for all regions. There is also a good amount of [tests](https://github.com/monken/cfn-include/tree/master/t) that might be helpful.
+See [/examples](https://github.com/nmccready/cfn-include/tree/master/examples) for templates that call an API Gateway endpoint to collect AMI IDs for all regions. There is also a good amount of [tests](https://github.com/nmccready/cfn-include/tree/master/t) that might be helpful.
 
 A common pattern is to process a template, validate it against the AWS [validate-template](https://docs.aws.amazon.com/cli/latest/reference/cloudformation/validate-template.html) API, minimize it and upload the result to S3. You can do this with a single line of code:
 
@@ -488,7 +499,7 @@ Node.js versions 8 and up are supported both on Windows and Linux.
 
     curl https://api.netcubed.de/latest/template?[options] -XPOST -d @<path>
 
-* `path`
+- `path`
 
   the contents of `path` will be `POST`ed to the web service. See `man curl` for details.
 
@@ -496,10 +507,10 @@ Options:
 
 Options are query parameters.
 
-* `validate=false` do not validate template [true]
+- `validate=false` do not validate template [true]
 
 To compile the synopsis run the following command.
 
 ```
-curl -Ssf -XPOST https://api.netcubed.de/latest/template -d '{"Fn::Include":"https://raw.githubusercontent.com/monken/cfn-include/master/examples/synopsis.json"}' > output.template
+curl -Ssf -XPOST https://api.netcubed.de/latest/template -d '{"Fn::Include":"https://raw.githubusercontent.com/nmccready/cfn-include/master/examples/synopsis.json"}' > output.template
 ```
