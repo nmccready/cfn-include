@@ -8,16 +8,17 @@ For example, [`Fn::Include`](#fninclude) provides a convenient way to include fi
 `cfn-include` tries to be minimally invasive, meaning that the template will still look and feel like an ordinary CloudFormation template. This is what sets `cfn-include` apart from other CloudFormation preprocessors such as [CFNDSL](https://github.com/stevenjack/cfndsl), [StackFormation](https://github.com/AOEpeople/StackFormation) and [AWSBoxen](https://github.com/mozilla/awsboxen). There is no need to use a scripting language or adjust to new syntax. Check them out though, they might be a better fit for you.
 
 **Functions**
-
-- [`Fn::Include`](#fninclude)
-- [`Fn::Flatten`](#fnflatten)
-- [`Fn::GetEnv`](#fngetenv)
-- [`Fn::Map`](#fnmap)
-- [`Fn::Merge`](#fnmerge)
-- [`Fn::Outputs`](#fnoutputs)
-- [`Fn::Sequence`](#fnsequence)
-- [`Fn::Stringify`](#fnstringify)
-- [`Fn::UpperCamelCase`](#fnuppercamelcase) and `Fn::LowerCamelCase`
+* [`Fn::Include`](#fninclude)
+* [`Fn::Flatten`](#fnflatten)
+* [`Fn::GetEnv`](#fngetenv)
+* [`Fn::Length`](#fnlength)
+* [`Fn::Map`](#fnmap)
+* [`Fn::Merge`](#fnmerge)
+* [`Fn::DeepMerge`](#fnmerge)
+* [`Fn::Outputs`](#fnoutputs)
+* [`Fn::Sequence`](#fnsequence)
+* [`Fn::Stringify`](#fnstringify)
+* [`Fn::UpperCamelCase`](#fnuppercamelcase) and `Fn::LowerCamelCase`
 
 Tag-based syntax is available in YAML templates. For example,`Fn::Include` becomes `!Include`.
 
@@ -240,6 +241,44 @@ Fn::Map:
 ]
 ```
 
+Custom variables can be specified as a single value, of as a list of up to three values. If a list is specified, the second variable is used as index and the third (if present) as size.
+
+```yaml
+Fn::Map:
+  - !Sequence [A, C]
+  - [NET, INDEX, N]
+  - Subnet${NET}:
+      Type: 'AWS::EC2::Subnet'
+      Properties:
+        CidrBlock: !Select [INDEX, !Cidr [MyCIDR, N, 8]]
+```
+
+```json
+[{
+  "SubnetA": {
+    "Type": "AWS::EC2::Subnet",
+    "Properties": {
+      "CidrBlock": { "Fn::Select": [ 0, { "Fn::Cidr": [ "MyCIDR", 3, 8 ] } ] }
+    }
+  }
+}, {
+  "SubnetB": {
+    "Type": "AWS::EC2::Subnet",
+    "Properties": {
+      "CidrBlock": { "Fn::Select": [ 1, { "Fn::Cidr": [ "MyCIDR", 3, 8 ] } ] }
+    }
+  }
+}, {
+  "SubnetC": {
+    "Type": "AWS::EC2::Subnet",
+    "Properties": {
+      "CidrBlock": { "Fn::Select": [ 2, { "Fn::Cidr": [ "MyCIDR", 3, 8 ] } ] }
+    }
+  }
+}]
+```
+
+
 ## Fn::Flatten
 
 This function flattens an array a single level. This is useful for flattening out nested [`Fn::Map`](#fnmap) calls.
@@ -315,6 +354,11 @@ Resources:
 
 The second argument is optional and provides the default value and will be used of the environmental variable is not defined. If the second argument is omitted `!GetEnv BUCKET_NAME` and the environmental variable is not defined then the compilation will fail.
 
+## Fn::Length
+
+`Fn::Length` returns the length of a list or expanded section.
+
+
 ## Fn::Merge
 
 `Fn::Merge` will merge an array of objects into a single object. See [lodash / merge](https://devdocs.io/lodash~4/index#merge) for details on its behavior. This function is useful if you want to add functionality to an existing template if you want to merge objects of your template that have been created with [`Fn::Map`](#fnmap).
@@ -323,6 +367,31 @@ The second argument is optional and provides the default value and will be used 
 
 ```yaml
 Fn::Merge:
+  - !Include s3://my-templates/my-template.json
+
+  - !Include s3://my-templates/my-other-template.json
+
+  - Parameters:
+      MyCustomParameter:
+        Type: String
+
+    Resources:
+      MyBucket:
+        Type: AWS::S3::Bucket
+```
+
+## Fn::DeepMerge
+
+`Fn::DeepMerge` will deeply merge an array of objects and arrays into a single object. See [deepmerge](https://www.npmjs.com/package/deepmerge) for details on its behavior. This function is useful if you want to add functionality to an existing template if you want to merge objects of your template that have been created with [`Fn::Map`](#fnmap).
+
+`Fn::DeepMerge` accepts a list of objects that will be merged together. You can use other `cfn-include` functions such as `Fn::Include` to pull in template from remote locations such as S3 buckets.
+
+To understand it better besides the below example refer to this [test](t/tests/deepmerge.yml). Note that all arrays are concatenated.
+
+Why does `Fn::Merge` still exist? Answer: Backwards compatibility for expected behavior.
+
+```yaml
+Fn::DeepMerge:
   - !Include s3://my-templates/my-template.json
 
   - !Include s3://my-templates/my-other-template.json
