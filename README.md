@@ -57,6 +57,7 @@ Options:
 * `--version`        print version and exit
 * `--context`        template full path. only utilized for stdin when the template is piped to this script
   example:          `cat examples/base.template | ./bin/cli.js --context examples/base.template`
+* `--doEnv`          pre-process env vars and inject into templates as they are processed looks for $KEY or ${KEY} matches
 
 `cfn-include` also accepts a template passed from stdin
 

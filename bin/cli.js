@@ -5,6 +5,7 @@ var _ = require('lodash'),
   exec = require('child_process').execSync,
   Client = require('../lib/cfnclient'),
   package = require('../package.json'),
+  replaceEnv = require('../lib/replaceEnv');
   env = process.env,
   opts = require('yargs').command(
     '$0 [path] [options]',
@@ -50,6 +51,11 @@ var _ = require('lodash'),
         desc: 'prefix for templates uploaded to the bucket',
         default: 'cfn-include',
       },
+      doEnv: {
+        default: false,
+        boolean: true,
+        desc: 'pre-process env vars',
+      },
       version: {
         boolean: true,
         desc: 'print version and exit',
@@ -70,7 +76,8 @@ if (opts.path) {
   else if (pathParse(opts.path).root) location = 'file://' + opts.path;
   else location = 'file://' + path.join(process.cwd(), opts.path);
   promise = include({
-    url: location
+    url: location,
+    doEnv: opts.doEnv,
   });
 } else {
   promise = new Promise((resolve, reject) => {
@@ -88,9 +95,12 @@ if (opts.path) {
     const location = opts.context ? path.resolve(opts.context) : 
       path.join(process.cwd(), 'template.yml');
 
+    template = opts.doEnv ? replaceEnv(template) : template;
+    
     return include({
       template: yaml.load(template),
       url: 'file://' + location,
+      doEnv: opts.doEnv,
     }).catch(err => console.error(err));
   });
 }
