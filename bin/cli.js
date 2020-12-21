@@ -95,7 +95,7 @@ if (opts.path) {
     const location = opts.context ? path.resolve(opts.context) : 
       path.join(process.cwd(), 'template.yml');
 
-    template = opts.doEnv ? replaceEnv(template) : template;
+    template = opts.enable === 'env' ? replaceEnv(template) : template;
     
     return include({
       template: yaml.load(template),
