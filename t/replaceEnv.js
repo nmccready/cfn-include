@@ -20,7 +20,7 @@ describe(replaceEnv.name, () => {
       Fn:DeepMerge:
       - !Include ./regions/us-east-1/someFile.yml
       - !Include ./regions/us-east-1/someFile.yml
-      - Junk: ""
+      - Junk: undefined
       - Something: hi
     `
     );
