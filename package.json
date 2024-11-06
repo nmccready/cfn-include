@@ -1,5 +1,5 @@
 {
-  "name": "cfn-include",
+  "name": "@znemz/cfn-include",
   "version": "2.0.0",
   "description": "Preprocessor for CloudFormation templates with support for loops and flexible include statements",
   "keywords": [
@@ -8,16 +8,20 @@
     "cloudformation",
     "include"
   ],
-  "homepage": "https://github.com/monken/cfn-include#readme",
+  "homepage": "https://github.com/nmccready/cfn-include#readme",
   "bugs": {
-    "url": "https://github.com/monken/cfn-include/issues"
+    "url": "https://github.com/nmccready/cfn-include/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/monken/cfn-include.git"
+    "url": "git+https://github.com/nmccready/cfn-include.git"
   },
   "license": "MIT",
   "author": {
+    "name": "Nicholas McCready",
+    "email": "nemtcan@gmail.com"
+  },
+  "originalAuthor": {
     "name": "Moritz Onken",
     "email": "onken@netcubed.de"
   },

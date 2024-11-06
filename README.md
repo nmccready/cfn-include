@@ -58,7 +58,7 @@ Tag-based syntax is available in YAML templates. For example,`Fn::Include` becom
 You can either install `cfn-include` or use a web service to compile templates.
 
 ```
-npm install --global cfn-include
+npm install --global @znemz/cfn-include
 ```
 
 The web service can be called with your favorite CLI tool such as `curl`.
@@ -123,7 +123,7 @@ This is what the `userdata.sh` looks like:
 ```bash
 cfn-include synopsis.json > output.template
 # you can also compile remote files
-cfn-include https://raw.githubusercontent.com/monken/cfn-include/master/examples/synopsis.json > output.template
+cfn-include https://raw.githubusercontent.com/nmccready/cfn-include/master/examples/synopsis.json > output.template
 ```
 
 The output will be something like this:
@@ -1133,7 +1133,7 @@ Outputs:
 
 ## More Examples
 
-See [/examples](https://github.com/monken/cfn-include/tree/master/examples) for templates that call an API Gateway endpoint to collect AMI IDs for all regions. There is also a good amount of [tests](https://github.com/monken/cfn-include/tree/master/t) that might be helpful.
+See [/examples](https://github.com/nmccready/cfn-include/tree/master/examples) for templates that call an API Gateway endpoint to collect AMI IDs for all regions. There is also a good amount of [tests](https://github.com/nmccready/cfn-include/tree/master/t) that might be helpful.
 
 A common pattern is to process a template, validate it against the AWS [validate-template](https://docs.aws.amazon.com/cli/latest/reference/cloudformation/validate-template.html) API, minimize it and upload the result to S3. You can do this with a single line of code:
 
@@ -1166,5 +1166,5 @@ Options are query parameters.
 To compile the synopsis run the following command.
 
 ```
-curl -Ssf -XPOST https://api.netcubed.de/latest/template -d '{"Fn::Include":"https://raw.githubusercontent.com/monken/cfn-include/master/examples/synopsis.json"}' > output.template
+curl -Ssf -XPOST https://api.netcubed.de/latest/template -d '{"Fn::Include":"https://raw.githubusercontent.com/nmccready/cfn-include/master/examples/synopsis.json"}' > output.template
 ```
