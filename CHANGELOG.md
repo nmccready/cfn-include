@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [2.0.1](https://github.com/nmccready/cfn-include/compare/v2.0.0...v2.0.1) (2024-11-14)
+
+
+### Bug Fixes
+
+* dependency bump CVE serve ([eed7ac5](https://github.com/nmccready/cfn-include/commit/eed7ac5de3dbb5a0607d8966d1c220857b8cc636))
+* **handleIncludeBody:** loopTemplate pass on option doEval ([95dd1a0](https://github.com/nmccready/cfn-include/commit/95dd1a0059fbf4ac37e445cd407c5baec2c3792a))
+* scoped to @znemz/cfn-include to publish 2.0.0 ([492e479](https://github.com/nmccready/cfn-include/commit/492e479a8fa8c1e15a33ce3a7962a7cca5affb94))
+
 ## [2.0.0](https://github.com/monken/cfn-include/compare/v1.4.1...v2.0.0) (2024-08-24)
 
 
