@@ -645,6 +645,7 @@ async function handleIncludeBody({ scope, args, body, absolute }) {
             scope,
             cft: temp,
             doEnv: args.doEnv,
+            doEval: args.doEval,
             doLog: args.doLog,
             inject: args.inject,
           }).then((_temp) => {
