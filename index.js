@@ -32,9 +32,10 @@ const { isOurExplicitFunction } = require('./lib/schema');
  *  optional and can be derived from url
  * @param  {string} [options.url] '(file|s3):///SOME_FILE_PATH.(json|yaml)'
  * @param  {boolean} options.doEnv inject environment from process.env as well
+ * @param  {boolean} options.doEval allow Fn::Eval to be used (js eval)
  * @param  {Object.<string, string>} [options.inject] object to
  *      inject { KEY: Value } from where ${KEY}
- *  is subtituted with Value
+ *  is substituted with Value
  * @param  {boolean} [options.doLog] log all arguments at the include recurse level
  *
  * Example: Load off off file system
@@ -49,6 +50,9 @@ const { isOurExplicitFunction } = require('./lib/schema');
  */
 module.exports = async function (options) {
   let { template } = options;
+  options.doEnv = getBoolEnvOpt(options.doEnv, 'CFN_INCLUDE_DO_ENV');
+  options.doEval = getBoolEnvOpt(options.doEval, 'CFN_INCLUDE_DO_EVAL');
+
   const base = parseLocation(options.url);
   const scope = options.scope || {};
   if (base.relative) throw new Error('url cannot be relative');
@@ -717,4 +721,8 @@ function JSONifyString(string) {
     }
   });
   return lines;
+}
+
+function getBoolEnvOpt(opt, envKey) {
+  return process.env[envKey] ? !!process.env[envKey] : opt;
 }

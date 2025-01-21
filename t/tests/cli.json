@@ -1,106 +1,132 @@
 {
-  "cli": [{
-    "name": "read from stdin",
-    "stdin": "foo: bar",
-    "output": {
-      "foo": "bar"
-    }
-  }, {
-    "name": "stdin with include",
-    "stdin": "foo: !Include t/includes/foobar.json",
-    "output": {
-      "foo": { "foo": "bar" }
-    }
-  }, {
-    "name": "simple load",
-    "template": "t/includes/deep.json",
-    "output": {
-      "foo": "bar"
-    }
-  }, {
-    "name": "simple load yaml",
-    "template": "t/includes/yaml/deep.yml",
-    "output": {
-      "foo": "bar"
-    }
-  }, {
-    "name": "enable env yaml",
-    "template": "t/includes/yaml/doEnv.yaml",
-    "args": ["--enable", "env"],
-    "env": {
-      "AWS_REGION": "us-east-1",
-      "SOMETHING": "yah"
-    },
-    "output": {
-      "from": {
-        "hi": "hi from east",
-        "replaceMe": "yah"
+  "cli": [
+    {
+      "name": "read from stdin",
+      "stdin": "foo: bar",
+      "output": {
+        "foo": "bar"
       }
-    }
-  }, {
-    "name": "enable env yaml",
-    "template": "t/includes/yaml/doEnvSg-12345678912-use-east-1.yaml",
-    "args": ["--enable", "env"],
-    "env": {
-      "AWS_REGION": "us-east-1",
-      "AWS_ACCOUNT_NUM": "12345678912"
     },
-    "output": {
-      "SomeSecurityGroups": {
-        "val": ["sg-123456"]
+    {
+      "name": "stdin with include",
+      "stdin": "foo: !Include t/includes/foobar.json",
+      "output": {
+        "foo": { "foo": "bar" }
       }
-    }
-  },
-  {
-    "name": "enable env yaml",
-    "template": "t/includes/yaml/doEnvSg-lodash-12345678912-use-east-1.yaml",
-    "args": ["--enable", "env"],
-    "env": {
-      "AWS_REGION": "us-east-1",
-      "AWS_ACCOUNT_NUM": "12345678912"
     },
-    "output": {
-      "SomeSecurityGroups": {
-        "val": ["sg-123456"]
+    {
+      "name": "simple load",
+      "template": "t/includes/deep.json",
+      "output": {
+        "foo": "bar"
       }
-    }
-  },
-   {
-    "name": "flatten",
-    "template": "t/includes/cliflatten.json",
-    "output": [{
-      "foo": 3,
-      "bar": 1
-    }, {
-      "foo": 4,
-      "bar": 1
-    }, {
-      "foo": 3,
-      "bar": 2
-    }, {
-      "foo": 4,
-      "bar": 2
-    }]
-  }, {
-    "name": "map resources",
-    "template": "t/includes/mapresources.json",
-    "output": {
-      "Resources": {
-        "SubnetA": {
-          "Type": "AWS::EC2::Subnet"
-        },
-        "SubnetB": {
-          "Type": "AWS::EC2::Subnet"
-        },
-        "SG": {
-          "Type": "AWS::EC2::SecurityGroup"
+    },
+    {
+      "name": "simple load yaml",
+      "template": "t/includes/yaml/deep.yml",
+      "output": {
+        "foo": "bar"
+      }
+    },
+    {
+      "name": "enable env yaml",
+      "template": "t/includes/yaml/doEnv.yaml",
+      "args": ["--enable", "env"],
+      "env": {
+        "AWS_REGION": "us-east-1",
+        "SOMETHING": "yah"
+      },
+      "output": {
+        "from": {
+          "hi": "hi from east",
+          "replaceMe": "yah"
         }
       }
+    },
+    {
+      "name": "enable env yaml",
+      "template": "t/includes/yaml/doEnvSg-12345678912-use-east-1.yaml",
+      "args": ["--enable", "env"],
+      "env": {
+        "AWS_REGION": "us-east-1",
+        "AWS_ACCOUNT_NUM": "12345678912"
+      },
+      "output": {
+        "SomeSecurityGroups": {
+          "val": ["sg-123456"]
+        }
+      }
+    },
+    {
+      "name": "enable env yaml",
+      "template": "t/includes/yaml/doEnvSg-lodash-12345678912-use-east-1.yaml",
+      "args": ["--enable", "env"],
+      "env": {
+        "AWS_REGION": "us-east-1",
+        "AWS_ACCOUNT_NUM": "12345678912"
+      },
+      "output": {
+        "SomeSecurityGroups": {
+          "val": ["sg-123456"]
+        }
+      }
+    },
+    {
+      "name": "flatten",
+      "template": "t/includes/cliflatten.json",
+      "output": [
+        {
+          "foo": 3,
+          "bar": 1
+        },
+        {
+          "foo": 4,
+          "bar": 1
+        },
+        {
+          "foo": 3,
+          "bar": 2
+        },
+        {
+          "foo": 4,
+          "bar": 2
+        }
+      ]
+    },
+    {
+      "name": "map resources",
+      "template": "t/includes/mapresources.json",
+      "output": {
+        "Resources": {
+          "SubnetA": {
+            "Type": "AWS::EC2::Subnet"
+          },
+          "SubnetB": {
+            "Type": "AWS::EC2::Subnet"
+          },
+          "SG": {
+            "Type": "AWS::EC2::SecurityGroup"
+          }
+        }
+      }
+    },
+    {
+      "name": "malformed yaml",
+      "template": "t/includes/yaml/malformed.yml",
+      "exitCode": 1,
+      "errorMessage": "missed comma"
+    },
+    {
+      "name": "ifEval",
+      "env": {
+        "CFN_INCLUDE_DO_EVAL": true,
+        "CFN_INCLUDE_DO_ENV": true
+      },
+      "template": "t/includes/ifEval.yml",
+      "output": {
+        "Name": "Yogi",
+        "LastName": "Bear"
+      }
     }
-  }, {
-    "name": "malformed yaml",
-    "template": "t/includes/yaml/malformed.yml",
-    "exitCode": 1,
-    "errorMessage": "missed comma"
-  }]
+  ]
 }
