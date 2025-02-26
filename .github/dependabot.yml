@@ -9,3 +9,7 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "daily"
+    commit-message: # force conventional commits standard
+      prefix: fix
+      prefix-development: chore
+      include: scope

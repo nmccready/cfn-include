@@ -236,7 +236,10 @@ async function recurse({ base, scope, cft, ...opts }) {
         }
       );
     }
-    if (cft['Fn::Eval'] && opts.doEval) {
+    if (cft['Fn::Eval']) {
+      if (!opts.doEval) {
+        return Promise.reject(new Error('Fn::Eval is not allowed doEval is falsy'));
+      }
       return recurse({ base, scope, cft: cft['Fn::Eval'], ...opts }).then(function (json) {
         // **WARNING** you have now enabled god mode
         // eslint-disable-next-line no-unused-vars, prefer-const
@@ -391,7 +394,10 @@ async function recurse({ base, scope, cft, ...opts }) {
       return isString ? seq.map((i) => String.fromCharCode(i)) : seq;
     }
 
-    if (cft['Fn::IfEval'] && opts.doEval) {
+    if (cft['Fn::IfEval']) {
+      if (!opts.doEval) {
+        return Promise.reject(new Error('Fn::IfEval is not allowed doEval is falsy'));
+      }
       return recurse({ base, scope, cft: cft['Fn::IfEval'], ...opts }).then(function (json) {
         // eslint-disable-next-line prefer-const
         let { truthy, falsy, evalCond, inject, doLog } = json;
