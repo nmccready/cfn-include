@@ -30,6 +30,7 @@ const tests = [
   'omit.json',
   'omitEmpty.json',
   'ifeval.js',
+  'eval.js',
   'amzn-intrinsic.yml',
   'joinNow.yml',
   'applyTags.yml',

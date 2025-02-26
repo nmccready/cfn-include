@@ -25,6 +25,32 @@ module.exports = {
       },
     },
     {
+      name: 'should fail',
+      doEval: false,
+      // test should fail as doEval is disabled
+      catch: (err) => err instanceof Error,
+      template: {
+        'Fn::IfEval': {
+          inject: {
+            lastName: 'bear',
+          },
+          evalCond: "'$lastName' === 'bear'",
+          truthy: {
+            Name: 'Yogi',
+            LastName: 'Bear',
+          },
+          falsy: {
+            Name: 'Fred',
+            LastName: 'Flint',
+          },
+        },
+      },
+      output: {
+        Name: 'Yogi',
+        LastName: 'Bear',
+      },
+    },
+    {
       name: 'falsy',
       doEval: true,
       template: {
