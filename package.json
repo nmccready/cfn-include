@@ -1,6 +1,6 @@
 {
   "name": "@znemz/cfn-include",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "Preprocessor for CloudFormation templates with support for loops and flexible include statements",
   "keywords": [
     "aws",
@@ -37,8 +37,8 @@
     "prepare": "sort-package-json",
     "serve": "serve ./t/fixtures -l 9999",
     "test": "npm run test:this",
-    "test:this": "run-p -r serve test:run",
-    "test:run": "sleep 1 && mocha --timeout 20000 --bail t/include.js t/cli.js t/replaceEnv.js"
+    "test:run": "sleep 1 && mocha --timeout 20000 --bail t/include.js t/cli.js t/replaceEnv.js",
+    "test:this": "run-p -r serve test:run"
   },
   "dependencies": {
     "@aws-sdk/client-cloudformation": "^3.637.0",
