@@ -9,6 +9,10 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "daily"
+    groups:
+      all:
+        patterns:
+          - "*"
     commit-message: # force conventional commits standard
       prefix: fix
       prefix-development: chore

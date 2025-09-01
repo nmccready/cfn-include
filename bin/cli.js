@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* eslint-disable global-require, no-console */
+ 
 const exec = require('child_process').execSync;
 const path = require('path');
 const _ = require('lodash');
@@ -15,14 +15,14 @@ const replaceEnv = require('../lib/replaceEnv');
 yargs.version(false);
 
 const { env } = process;
-// eslint-disable-next-line global-require
+ 
 const opts = yargs
   .command('$0 [path] [options]', pkg.description, (y) =>
     y.positional('path', {
       positional: true,
       desc: 'location of template. Either path to a local file, URL or file on an S3 bucket (e.g. s3://bucket-name/example.template)',
       required: false,
-    })
+    }),
   )
   .options({
     minimize: {
@@ -59,7 +59,7 @@ const opts = yargs
     },
     context: {
       desc:
-        // eslint-disable-next-line max-len
+         
         'template full path. only utilized for stdin when the template is piped to this script',
       required: false,
       string: true,
@@ -77,13 +77,13 @@ const opts = yargs
     inject: {
       alias: 'i',
       string: true,
-      // eslint-disable-next-line max-len
+       
       desc: `JSON string payload to use for template injection.`,
       coerce: (valStr) => JSON.parse(valStr),
     },
     doLog: {
       boolean: true,
-      // eslint-disable-next-line max-len
+       
       desc: `console log out include options in recurse step`,
     },
     version: {
@@ -154,8 +154,8 @@ promise
         })
           .toString()
           .trim();
-      } catch (e) {
-        // eslint-disable-next-line no-empty
+      } catch {
+         
       }
       _.defaultsDeep(template, {
         Metadata: {
@@ -180,7 +180,7 @@ promise
     console.log(
       opts.yaml
         ? yaml.dump(template, opts)
-        : JSON.stringify(template, null, opts.minimize ? null : 2)
+        : JSON.stringify(template, null, opts.minimize ? null : 2),
     );
   })
   .catch(function (err) {
