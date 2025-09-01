@@ -92,7 +92,7 @@ module.exports = async function (options) {
  */
 async function recurse({ base, scope, cft, ...opts }) {
   if (opts.doLog) {
-    // eslint-disable-next-line no-console
+
     console.log({ base, scope, cft, ...opts });
   }
   scope = _.clone(scope);
@@ -168,7 +168,7 @@ async function recurse({ base, scope, cft, ...opts }) {
       return recurse({ base, scope, cft: cft['Fn::FlattenDeep'], ...opts }).then(
         function (json) {
           return _.flattenDeep(json);
-        }
+        },
       );
     }
     if (cft['Fn::Uniq']) {
@@ -195,7 +195,7 @@ async function recurse({ base, scope, cft, ...opts }) {
       return recurse({ base, scope, cft: cft['Fn::SortedUniq'], ...opts }).then(
         function (array) {
           return _.sortedUniq(array.sort());
-        }
+        },
       );
     }
     if (cft['Fn::SortBy']) {
@@ -208,7 +208,7 @@ async function recurse({ base, scope, cft, ...opts }) {
     }
     if (cft['Fn::SortObject']) {
       return recurse({ base, scope, cft: cft['Fn::SortObject'], ...opts }).then(function ({
-        // eslint-disable-next-line no-shadow
+
         object,
         options,
         ...rest // allow object to be optional (implied)
@@ -233,7 +233,7 @@ async function recurse({ base, scope, cft, ...opts }) {
         function (json) {
           // omit falsy values except false, and 0
           return _.omitBy(json, (v) => !v && v !== false && v !== 0);
-        }
+        },
       );
     }
     if (cft['Fn::Eval']) {
@@ -242,14 +242,14 @@ async function recurse({ base, scope, cft, ...opts }) {
       }
       return recurse({ base, scope, cft: cft['Fn::Eval'], ...opts }).then(function (json) {
         // **WARNING** you have now enabled god mode
-        // eslint-disable-next-line no-unused-vars, prefer-const
+
         let { state, script, inject, doLog } = json;
         script = replaceEnv(script, _.merge(_.cloneDeep(opts.inject), inject), opts.doEnv);
         if (doLog) {
-          // eslint-disable-next-line no-console
+
           console.log({ state, script, inject });
         }
-        // eslint-disable-next-line no-eval
+
         return eval(script);
       });
     }
@@ -258,7 +258,7 @@ async function recurse({ base, scope, cft, ...opts }) {
         function (json) {
           json = _.isPlainObject(json) ? { ...json } : { location: json };
           if (json.doLog) {
-            // eslint-disable-next-line no-console
+
             console.log(json);
           }
           const location = parseLocation(json.location);
@@ -277,13 +277,13 @@ async function recurse({ base, scope, cft, ...opts }) {
             return globs;
           }
           return 'Unsupported File Type';
-        }
+        },
       );
     }
     if (cft['Fn::Merge']) {
       return recurse({ base, scope, cft: cft['Fn::Merge'], ...opts }).then(function (json) {
         delete cft['Fn::Merge'];
-        // eslint-disable-next-line prefer-spread
+
         return recurse({ base, scope, cft: _.defaults(cft, _.merge.apply(_, json)), ...opts });
       });
     }
@@ -298,24 +298,24 @@ async function recurse({ base, scope, cft, ...opts }) {
             });
           }
           return recurse({ base, scope, cft: _.defaults(cft, mergedObj), ...opts });
-        }
+        },
       );
     }
     if (cft['Fn::ObjectKeys']) {
       return recurse({ base, scope, cft: cft['Fn::ObjectKeys'], ...opts }).then((json) =>
-        Object.keys(json)
+        Object.keys(json),
       );
     }
     if (cft['Fn::ObjectValues']) {
       return recurse({ base, scope, cft: cft['Fn::ObjectValues'], ...opts }).then((json) =>
-        Object.values(json)
+        Object.values(json),
       );
     }
     if (cft['Fn::Stringify']) {
       return recurse({ base, scope, cft: cft['Fn::Stringify'], ...opts }).then(
         function (json) {
           return JSON.stringify(json);
-        }
+        },
       );
     }
     if (cft['Fn::StringSplit']) {
@@ -324,13 +324,13 @@ async function recurse({ base, scope, cft, ...opts }) {
           if (!string) {
             string = '';
           }
-          // eslint-disable-next-line no-console
+
           if (doLog) console.log({ string, separator });
           if (!separator) {
             separator = ',';
           }
           return string.split(separator);
-        }
+        },
       );
     }
     if (cft['Fn::UpperCamelCase']) {
@@ -356,7 +356,7 @@ async function recurse({ base, scope, cft, ...opts }) {
     if (cft['Fn::Outputs']) {
       const outputs = await recurse({ base, scope, cft: cft['Fn::Outputs'], ...opts });
       const result = {};
-      // eslint-disable-next-line no-restricted-syntax, guard-for-in
+
       for (const output in outputs) {
         const val = outputs[output];
         const exp = {
@@ -380,7 +380,7 @@ async function recurse({ base, scope, cft, ...opts }) {
 
     if (cft['Fn::Sequence']) {
       const outputs = await recurse({ base, scope, cft: cft['Fn::Sequence'], ...opts });
-      // eslint-disable-next-line prefer-const
+
       let [start, stop, step = 1] = outputs;
       const isString = typeof start === 'string';
       if (isString) {
@@ -389,7 +389,7 @@ async function recurse({ base, scope, cft, ...opts }) {
       }
       const seq = Array.from(
         { length: Math.floor((stop - start) / step) + 1 },
-        (__, i) => start + i * step
+        (__, i) => start + i * step,
       );
       return isString ? seq.map((i) => String.fromCharCode(i)) : seq;
     }
@@ -399,7 +399,7 @@ async function recurse({ base, scope, cft, ...opts }) {
         return Promise.reject(new Error('Fn::IfEval is not allowed doEval is falsy'));
       }
       return recurse({ base, scope, cft: cft['Fn::IfEval'], ...opts }).then(function (json) {
-        // eslint-disable-next-line prefer-const
+
         let { truthy, falsy, evalCond, inject, doLog } = json;
         if (!evalCond) {
           return Promise.reject(new Error('Fn::IfEval evalCond is required'));
@@ -418,11 +418,11 @@ async function recurse({ base, scope, cft, ...opts }) {
           falsy = replaceEnv(falsy, _.merge(_.cloneDeep(opts.inject), inject), opts.doEnv);
         }
 
-        // eslint-disable-next-line no-eval
+
         const condResult = eval(evalCond);
 
         if (doLog) {
-          // eslint-disable-next-line no-console
+
           console.log({ truthy, falsy, inject, evalCond, condResult });
         }
 
@@ -456,11 +456,11 @@ async function recurse({ base, scope, cft, ...opts }) {
                       Tags: tags,
                     },
                   },
-                  val
+                  val,
                 );
               }
               return resources[id];
-            })
+            }),
           );
         });
         return Promise.all(promises).then(() => resources);
@@ -468,7 +468,7 @@ async function recurse({ base, scope, cft, ...opts }) {
     }
 
     return Promise.props(
-      _.mapValues(cft, (template) => recurse({ base, scope, cft: template, ...opts }))
+      _.mapValues(cft, (template) => recurse({ base, scope, cft: template, ...opts })),
     );
   }
 
@@ -573,7 +573,7 @@ async function fnInclude({ base, scope, cft, ...opts }) {
           const inject = await recurse({ base, scope, cft: cft.inject, ...opts });
           const processed = await origProcTemplate(template, inject, opts.doEnv);
           return replaceEnv(processed, inject, opts.doEnv);
-        } catch (e) {
+        } catch {
           return '';
         }
       };
@@ -583,7 +583,7 @@ async function fnInclude({ base, scope, cft, ...opts }) {
   cft = fnIncludeOpts(cft, opts);
 
   if (cft.doLog) {
-    // eslint-disable-next-line no-console
+
     console.log({ base, scope, args: cft, ...opts });
   }
   // console.log(args)
@@ -610,7 +610,7 @@ async function fnInclude({ base, scope, cft, ...opts }) {
   } else if (location.protocol === 's3') {
     const basedir = pathParse(base.path).dir;
     const bucket = location.relative ? base.host : location.host;
-    // eslint-disable-next-line n/no-deprecated-api
+     
     let key = location.relative ? url.resolve(`${basedir}/`, location.raw) : location.path;
     key = key.replace(/^\//, '');
     absolute = `${location.protocol}://${[bucket, key].join('/')}`;
@@ -619,17 +619,17 @@ async function fnInclude({ base, scope, cft, ...opts }) {
         new GetObjectCommand({
           Bucket: bucket,
           Key: key,
-        })
+        }),
       )
       .then((res) => res.Body.toString())
       .then(procTemplate);
   } else if (location.protocol && location.protocol.match(/^https?$/)) {
     const basepath = `${pathParse(base.path).dir}/`;
-    /* eslint-disable n/no-deprecated-api */
+     
     absolute = location.relative
       ? url.resolve(`${location.protocol}://${base.host}${basepath}`, location.raw)
       : location.raw;
-    /* eslint-enable n/no-deprecated-api */
+     
     body = request(absolute).then(procTemplate);
   }
   return handleIncludeBody({ scope, args: cft, body, absolute });
@@ -678,13 +678,13 @@ async function handleIncludeBody({ scope, args, body, absolute }) {
           const query = _.isString(args.query)
             ? replaceEnv(args.query, args.inject, args.doEnv)
             : await recurse({
-                base: parseLocation(absolute),
-                scope,
-                cft: args.query,
-                doEnv: args.doEnv,
-                doLog: args.doLog,
-                inject: args.inject,
-              });
+              base: parseLocation(absolute),
+              scope,
+              cft: args.query,
+              doEnv: args.doEnv,
+              doLog: args.doLog,
+              inject: args.inject,
+            });
           return getParser(args.parser)(temp, query);
         });
       }

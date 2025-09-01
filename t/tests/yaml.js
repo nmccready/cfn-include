@@ -23,7 +23,7 @@ const synopsis = {
                 '',
                 [
                   '#!/bin/bash\n',
-                  // eslint-disable-next-line max-len, no-template-curly-in-string
+                   
                   '"/opt/aws/bin/cfn-init -s ${AWS::StackId} -r MyInstance --region ${AWS::Region}\n',
                   '',
                 ],
@@ -66,7 +66,7 @@ module.exports = {
       output: {
         Sub: {
           scalar: {
-            'Fn::Sub': '${Foobar}', // eslint-disable-line no-template-curly-in-string
+            'Fn::Sub': '${Foobar}',  
           },
           sequence: {
             'Fn::Sub': ['foobar', { test: 123 }],

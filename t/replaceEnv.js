@@ -1,8 +1,8 @@
 const assert = require('assert');
 const replaceEnv = require('../lib/replaceEnv');
 
-describe(replaceEnv.name, () => {
-  it('should replace some defined vars', () => {
+describe(replaceEnv.name, function() {
+  it('should replace some defined vars', function() {
     const template = replaceEnv(
       `
       Fn:DeepMerge:
@@ -11,7 +11,7 @@ describe(replaceEnv.name, () => {
       - Junk: $JUNK
       - Something: \${SOMETHING_ELSE}
     `,
-      { AWS_REGION: 'us-east-1', JUNK: undefined, SOMETHING_ELSE: 'hi' }
+      { AWS_REGION: 'us-east-1', JUNK: undefined, SOMETHING_ELSE: 'hi' },
     );
 
     assert.deepEqual(
@@ -22,7 +22,7 @@ describe(replaceEnv.name, () => {
       - !Include ./regions/us-east-1/someFile.yml
       - Junk: undefined
       - Something: hi
-    `
+    `,
     );
   });
 });

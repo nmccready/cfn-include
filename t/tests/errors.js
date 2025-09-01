@@ -19,7 +19,7 @@ module.exports = {
     {
       name: 'json comma and comment',
       description:
-        // eslint-disable-next-line max-len
+         
         "this is not a valid JSON document because of the trailing comma in line 2. However, it's valid YAML and therefore parseable.",
       template: {
         'Fn::Include': 'includes/broken/commawithcomment.json',

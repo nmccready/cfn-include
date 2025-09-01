@@ -42,17 +42,18 @@ process.env.README = 'readme';
 tests.forEach(function (file) {
   const testFile =
     posix.extname(file) === '.js'
-      ? // eslint-disable-next-line global-require, import/no-dynamic-require
-        require(`./tests/${file}`)
+      ?  
+      require(`./tests/${file}`)
       : yaml.load(fs.readFileSync(`t/tests/${file}`));
-  // eslint-disable-next-line guard-for-in, no-restricted-syntax
+
   for (const category in testFile) {
+
     describe(file, function () {
       testFile[category].forEach(function (test) {
         const fn = test.only ? it.only : it;
         const opts = {
           template: test.template,
-          // eslint-disable-next-line n/no-path-concat
+           
           url: `file://${__dirname}/template.json`,
           doEnv: !!test.doEnv || false,
           doEval: !!test.doEval || false,
@@ -73,10 +74,10 @@ tests.forEach(function (file) {
               .catch(
                 test.catch
                   ? function (err) {
-                      assert.ok(test.catch(err) === true);
-                      done();
-                    }
-                  : done
+                    assert.ok(test.catch(err) === true);
+                    done();
+                  }
+                  : done,
               );
           });
         });
