@@ -21,7 +21,6 @@
     "name": "Nicholas McCready",
     "email": "nemtcan@gmail.com"
   },
-  "main": "index.js",
   "bin": {
     "cfn-include": "bin/cli.js"
   },
@@ -43,7 +42,7 @@
   "dependencies": {
     "@aws-sdk/client-cloudformation": "^3.637.0",
     "@aws-sdk/client-s3": "^3.637.0",
-    "@znemz/cft-utils": "0.1.22",
+    "@znemz/cft-utils": "0.1.23",
     "@znemz/sort-object": "^3.0.4",
     "aws-sdk-v3-proxy": "2.2.0",
     "bluebird": "^3.7.2",

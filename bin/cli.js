@@ -4,7 +4,6 @@ const exec = require('child_process').execSync;
 const path = require('path');
 const _ = require('lodash');
 const pathParse = require('path-parse');
-const yargs = require('yargs');
 
 const include = require('../index');
 const yaml = require('../lib/yaml');
@@ -12,11 +11,14 @@ const Client = require('../lib/cfnclient');
 const pkg = require('../package.json');
 const replaceEnv = require('../lib/replaceEnv');
 
-yargs.version(false);
-
 const { env } = process;
- 
-const opts = yargs
+
+(async () => {
+  const { default : yargs } = await import('yargs');
+  const { hideBin } = await import('yargs/helpers');
+
+  const opts = yargs(hideBin(process.argv))
+  .version(false)
   .command('$0 [path] [options]', pkg.description, (y) =>
     y.positional('path', {
       positional: true,
@@ -189,3 +191,5 @@ promise
     console.log(err.stack);
     process.exit(1);
   });
+
+})(); 
