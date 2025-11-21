@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## 2.1.6 (2025-11-21)
+
+
+### Bug Fixes
+
+* safeDump to dump ([98393d1](https://github.com/nmccready/cfn-include/commit/98393d1902a7ee681bc5bd214a244a65c0222bec))
+
 ## 2.1.5 (2025-11-18)
 
 ## 2.1.4 (2025-11-06)
