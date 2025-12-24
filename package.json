@@ -8,13 +8,13 @@
     "cloudformation",
     "include"
   ],
-  "homepage": "https://github.com/nmccready/cfn-include#readme",
+  "homepage": "https://github.com/brickhouse-tech/cfn-include#readme",
   "bugs": {
-    "url": "https://github.com/nmccready/cfn-include/issues"
+    "url": "https://github.com/brickhouse-tech/cfn-include/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nmccready/cfn-include.git"
+    "url": "https://github.com/brickhouse-tech/cfn-include.git"
   },
   "license": "MIT",
   "author": {
